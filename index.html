@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lyap.js - Elegant HTML Enhancer</title>
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Lyap.js is an elegant, declarative library bridging local UI reactivity and server-driven updates. Write inline bindings directly in HTML, and trigger AJAX actions that consume standard JSON.">
+  <meta name="keywords" content="Lyap.js, javascript, HTML enhancer, reactive library, lightweight, minimal, Alpine.js alternative, htmx alternative">
+  <meta name="author" content="Lyap.js Team">
+  <meta name="robots" content="index, follow">
+
+  <!-- Inline Theme Initialization Script (Prevents flash of dark/light theme) -->
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('theme');
+      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const theme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+
+  <!-- Favicons -->
+  <link rel="apple-touch-icon" sizes="180x180" href="favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicons/favicon-16x16.png">
+  <link rel="manifest" href="favicons/site.webmanifest">
+  <link rel="shortcut icon" href="favicons/favicon.ico">
+
+  <!-- Core Stylesheet -->
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+  <!-- Subtle Minimal Glow -->
+  <div class="radial-glow"></div>
+
+  <!-- Entire Page Container -->
+  <div class="page-container">
+    
+    <!-- Top Action Controls (Theme Toggle) -->
+    <div class="top-controls">
+      <button class="theme-toggle" id="theme-toggle-btn" aria-label="Toggle Theme">
+        <!-- Sun Icon (visible in dark mode) -->
+        <svg class="sun-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="5"></circle>
+          <line x1="12" y1="1" x2="12" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="23"></line>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+          <line x1="1" y1="12" x2="3" y2="12"></line>
+          <line x1="21" y1="12" x2="23" y2="12"></line>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+        <!-- Moon Icon (visible in light mode) -->
+        <svg class="moon-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Hero Section -->
+    <main class="hero-wrapper">
+      <header class="status-header">
+        <span class="badge">Phase 1: Core Development</span>
+      </header>
+
+      <h1 class="brand-title">Lyap<span class="accent">.</span>js</h1>
+      
+      <p class="tagline">Lightweight. Fast. HTML Enhancer.</p>
+      
+      <p class="description">
+        An elegant, declarative library bridging local UI reactivity and server-driven updates. Write inline bindings directly in your HTML, and trigger AJAX actions that consume standard JSON data rather than swapping raw markup.
+      </p>
+
+      <!-- Interactive Concept Demo -->
+      <section class="demo-section">
+        <div class="interactive-card" ly-state="count: 0">
+          
+          <!-- Outer Card Header -->
+          <div class="card-header">
+            <div class="mac-dots">
+              <span class="dot"></span>
+              <span class="dot"></span>
+              <span class="dot"></span>
+            </div>
+            <span class="filename">demo.html</span>
+          </div>
+
+          <!-- Card Body Split Panels -->
+          <div class="card-body">
+            
+            <!-- Left Side: Code Editor Panel -->
+            <div class="editor-panel">
+              <div class="panel-header">
+                <span class="panel-title">Source HTML</span>
+                <button class="copy-btn" id="copy-code-btn" aria-label="Copy Code">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                  <span class="btn-text">Copy</span>
+                </button>
+              </div>
+              <div class="code-container">
+                <div class="line-numbers">
+                  <span>1</span>
+                  <span>2</span>
+                  <span>3</span>
+                  <span>4</span>
+                  <span>5</span>
+                </div>
+                <pre class="code-display"><code><span class="tag">&lt;div</span> <span class="attr">ly-state</span>=<span class="val">"count: 0"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;button</span> <span class="attr">ly-click</span>=<span class="val">"count++"</span> <span class="attr">class</span>=<span class="val">"action-btn"</span><span class="tag">&gt;</span>
+    Count: <span class="tag">&lt;span</span> <span class="attr">ly-bind</span>=<span class="val">"count"</span><span class="tag">&gt;</span><span class="txt" ly-bind="count">0</span><span class="tag">&lt;/span&gt;</span>
+  <span class="tag">&lt;/button&gt;</span>
+<span class="tag">&lt;/div&gt;</span></code></pre>
+              </div>
+            </div>
+
+            <!-- Right Side: Live Canvas Preview Panel -->
+            <div class="preview-panel">
+              <div class="panel-header">
+                <span class="panel-title">Live Preview</span>
+              </div>
+              <div class="canvas">
+                <div class="live-action">
+                  <button class="action-btn" ly-click="count++">
+                    Count: <span ly-bind="count">0</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Refined Footer -->
+    <footer class="footer">
+      <div class="footer-divider"></div>
+      <div class="footer-content">
+        <span class="copyright">© 2026 Lyap.js Authors. MIT License.</span>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Core Script Logic -->
+  <script src="index.js"></script>
+</body>
+</html>
