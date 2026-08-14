@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LyapJs Documentation — Introduction</title>
+  <title>Quick Start Guide — LyapJs Documentation</title>
   <link rel="stylesheet" href="./style.css" />
   <script src="./lyap.min.js"></script>
 </head>
@@ -27,7 +27,7 @@
       </a>
 
       <nav class="nav-links">
-        <a href="./getting-started.html" class="nav-link">Documentation</a>
+        <a href="./getting-started.html" class="nav-link active">Documentation</a>
         <a href="./directives.html" class="nav-link">Directives</a>
         <a href="./playground.html" class="nav-link">Playground</a>
         <a href="https://github.com" target="_blank" class="nav-link">GitHub</a>
@@ -45,10 +45,10 @@
       <!-- Left Sidebar -->
       <aside class="sidebar" ly-class=":isNavOpen mobile-open">
         <div class="sidebar-category">Overview</div>
-        <a href="./index.html" class="sidebar-link active">Introduction</a>
+        <a href="./index.html" class="sidebar-link">Introduction</a>
 
         <div class="sidebar-category">Getting Started</div>
-        <a href="./getting-started.html" class="sidebar-link">Quick Start Guide</a>
+        <a href="./getting-started.html" class="sidebar-link active">Quick Start Guide</a>
         <a href="./core-concepts.html" class="sidebar-link">Core Architecture</a>
 
         <div class="sidebar-category">Directives &amp; APIs</div>
@@ -64,60 +64,55 @@
       <main class="doc-main" ly-on:click="if (isNavOpen) isNavOpen = false;">
 
         <div class="page-header">
-          <h1 class="page-title">LyapJs Documentation</h1>
+          <h1 class="page-title">Quick Start Guide</h1>
           <p class="page-subtitle">
-            HTML-First Reactive Micro-Framework for Modern Web Applications.
+            Instructions for integrating LyapJs into existing web applications or new projects.
           </p>
         </div>
 
-        <!-- Feature Grid -->
-        <div class="grid-cards" id="features">
-          <div class="feature-card">
-            <div class="feature-title">Zero Build Step</div>
-            <div class="feature-desc">Include a 22 KB CDN script tag and start writing reactive HTML components immediately without complex build toolchains.</div>
-          </div>
-
-          <div class="feature-card">
-            <div class="feature-title">100% CSP Compliant</div>
-            <div class="feature-desc">Employs a safe sandboxed AST token evaluator — zero reliance on unsafe <code>eval()</code> or <code>new Function()</code>.</div>
-          </div>
-
-          <div class="feature-card">
-            <div class="feature-title">Signal-Based Reactivity</div>
-            <div class="feature-desc">Fine-grained reactive signals track target property dependencies for surgical DOM updates without Virtual DOM overhead.</div>
-          </div>
-
-          <div class="feature-card">
-            <div class="feature-title">Scoped HTML State</div>
-            <div class="feature-desc">Declare reactive state inside standard <code>&lt;script type="lyap"&gt;</code> tags with prototypal DOM scope inheritance.</div>
-          </div>
-        </div>
-
-        <h2 class="doc-h2" id="example">Basic Example</h2>
-        <p class="doc-p">Declare state inside a script tag and bind properties using declarative directives:</p>
+        <h2 class="doc-h2" id="cdn">1. CDN Installation</h2>
+        <p class="doc-p">Include the production bundle via script tag inside your document <code>&lt;head&gt;</code> or at the bottom of the body:</p>
 
         <div class="code-box">
           <button class="btn-copy" onclick="navigator.clipboard.writeText(this.nextElementSibling.innerText); this.textContent='Copied'; setTimeout(()=>this.textContent='Copy', 1500)">Copy</button>
-          <pre><code><span class="cmt">&lt;!-- Load LyapJs Production CDN --&gt;</span>
-<span class="tag">&lt;script</span> <span class="attr">src</span>=<span class="str">"https://unpkg.com/@lyapjs/dom"</span><span class="tag">&gt;&lt;/script&gt;</span>
+          <pre><code><span class="cmt">&lt;!-- CDN Installation --&gt;</span>
+<span class="tag">&lt;script</span> <span class="attr">src</span>=<span class="str">"https://unpkg.com/@lyapjs/dom"</span><span class="tag">&gt;&lt;/script&gt;</span></code></pre>
+        </div>
 
-<span class="cmt">&lt;!-- Reactive HTML Component --&gt;</span>
-<span class="tag">&lt;div&gt;</span>
+        <h2 class="doc-h2" id="npm">2. Package Installation</h2>
+        <p class="doc-p">Install the modular packages via package manager for bundled environments:</p>
+
+        <div class="code-box">
+          <button class="btn-copy" onclick="navigator.clipboard.writeText(this.nextElementSibling.innerText); this.textContent='Copied'; setTimeout(()=>this.textContent='Copy', 1500)">Copy</button>
+          <pre><code>npm install @lyapjs/dom @lyapjs/reactive</code></pre>
+        </div>
+
+        <h2 class="doc-h2" id="fouc">3. Preventing FOUC (`ly-cloak`)</h2>
+        <p class="doc-p">To prevent Flash of Uncompiled Content during initialization, apply the <code>ly-cloak</code> attribute along with the CSS declaration:</p>
+
+        <div class="code-box">
+          <button class="btn-copy" onclick="navigator.clipboard.writeText(this.nextElementSibling.innerText); this.textContent='Copied'; setTimeout(()=>this.textContent='Copy', 1500)">Copy</button>
+          <pre><code><span class="tag">&lt;style&gt;</span>
+  [ly-cloak] { display: none !important; }
+<span class="tag">&lt;/style&gt;</span>
+
+<span class="tag">&lt;div</span> <span class="attr">ly-cloak</span><span class="tag">&gt;</span>
   <span class="tag">&lt;script</span> <span class="attr">type</span>=<span class="str">"lyap"</span><span class="tag">&gt;</span>
-    <span class="kw">state</span>({ count: 0 });
+    <span class="kw">state</span>({ message: <span class="str">'Ready'</span> });
   <span class="tag">&lt;/script&gt;</span>
-
-  <span class="tag">&lt;button</span> <span class="attr">ly-on:click</span>=<span class="str">"count++"</span><span class="tag">&gt;</span>Increment<span class="tag">&lt;/button&gt;</span>
-  <span class="tag">&lt;span</span> <span class="attr">ly-text</span>=<span class="str">"count"</span><span class="tag">&gt;&lt;/span&gt;</span>
+  <span class="tag">&lt;span</span> <span class="attr">ly-text</span>=<span class="str">"message"</span><span class="tag">&gt;&lt;/span&gt;</span>
 <span class="tag">&lt;/div&gt;</span></code></pre>
         </div>
 
         <!-- Page Footer -->
         <div class="doc-footer-nav">
-          <span></span>
-          <a href="./getting-started.html" class="footer-nav-btn">
+          <a href="./index.html" class="footer-nav-btn">
+            <span>Previous</span>
+            <strong>&larr; Introduction</strong>
+          </a>
+          <a href="./core-concepts.html" class="footer-nav-btn">
             <span>Next</span>
-            <strong>Quick Start Guide &rarr;</strong>
+            <strong>Core Architecture &rarr;</strong>
           </a>
         </div>
 
@@ -128,8 +123,9 @@
         <div class="toc-nav-title">ON THIS PAGE</div>
         <div class="progress-counter" id="progress-val">0% Read</div>
         <nav class="toc-list">
-          <a href="#features" class="toc-link-item">Key Features</a>
-          <a href="#example" class="toc-link-item">Basic Example</a>
+          <a href="#cdn" class="toc-link-item">1. CDN Installation</a>
+          <a href="#npm" class="toc-link-item">2. Package Install</a>
+          <a href="#fouc" class="toc-link-item">3. Prevent FOUC</a>
         </nav>
       </aside>
 
