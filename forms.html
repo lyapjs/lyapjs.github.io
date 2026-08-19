@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Forms &amp; Binding — Lyap</title>
-<meta name="description" content="Two-way data binding with ly-bind: text, numbers, checkboxes, radios, selects, validation and the $form helper.">
+<meta name="description" content="Two-way form control binding with ly-model, modifiers, and validation in Lyap.">
 <meta name="theme-color" id="meta-theme" content="#ffffff">
 <link rel="icon" href="favicons/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="favicons/favicon-32x32.png">
@@ -24,13 +24,15 @@
   document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
 })();
 </script>
+<script src="assets/site.js"></script>
+<script src="lyap.min.js"></script>
 </head>
 <body data-page="forms">
-<div id="app" ly-cloak>
+<div id="app">
 
   <header class="navbar">
     <div class="nav-inner">
-      <button class="nav-icon-btn menu-btn" ly-on:click="toggleDrawer" ly-attr:aria-expanded="drawer" aria-label="Toggle navigation">
+      <button class="nav-icon-btn menu-btn" ly-on:click="app.toggleDrawer()" ly-bind:aria-expanded="app.drawer" aria-label="Toggle navigation">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
       </button>
       <a class="brand" href="index.html">
@@ -40,29 +42,29 @@
       <nav class="nav-links" aria-label="Main">
         <a href="get-started.html">Docs</a>
         <a href="reference.html">Reference</a>
-<a href="https://github.com/lyapjs/Lyap" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href="https://github.com/lyapjs/Lyap" target="_blank" rel="noopener noreferrer">GitHub</a>
       </nav>
       <div class="nav-right">
-        <div class="theme-toggle" ly-on:click.outside=":themeMenu = false">
-          <button class="nav-icon-btn" ly-on:click="toggleThemeMenu" aria-label="Change color theme">
+        <div class="theme-toggle">
+          <button class="nav-icon-btn" ly-on:click="app.toggleThemeMenu()" aria-label="Change color theme">
             <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
             <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
           </button>
-          <div class="theme-menu" ly-show="themeMenu" role="menu">
-            <button class="theme-menu-item" ly-on:click="setTheme('system')" ly-class=":theme==='system' selected" role="menuitemradio" aria-checked="false">
+          <div class="theme-menu" ly-show="app.themeMenu" role="menu">
+            <button class="theme-menu-item" ly-on:click="app.setTheme('system')" ly-bind:class="app.theme === 'system' ? 'theme-menu-item selected' : 'theme-menu-item'" role="menuitemradio" aria-checked="false">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
               <span>System</span>
-              <svg class="check" ly-show="theme === 'system'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <svg class="check" ly-show="app.theme === 'system'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
             </button>
-            <button class="theme-menu-item" ly-on:click="setTheme('light')" ly-class=":theme==='light' selected" role="menuitemradio" aria-checked="false">
+            <button class="theme-menu-item" ly-on:click="app.setTheme('light')" ly-bind:class="app.theme === 'light' ? 'theme-menu-item selected' : 'theme-menu-item'" role="menuitemradio" aria-checked="false">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
               <span>Light</span>
-              <svg class="check" ly-show="theme === 'light'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <svg class="check" ly-show="app.theme === 'light'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
             </button>
-            <button class="theme-menu-item" ly-on:click="setTheme('dark')" ly-class=":theme==='dark' selected" role="menuitemradio" aria-checked="false">
+            <button class="theme-menu-item" ly-on:click="app.setTheme('dark')" ly-bind:class="app.theme === 'dark' ? 'theme-menu-item selected' : 'theme-menu-item'" role="menuitemradio" aria-checked="false">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
               <span>Dark</span>
-              <svg class="check" ly-show="theme === 'dark'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <svg class="check" ly-show="app.theme === 'dark'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
             </button>
           </div>
         </div>
@@ -71,18 +73,14 @@
   </header>
 
   <div class="layout">
-    <div class="drawer-backdrop" ly-show="drawer" ly-on:click.self=":drawer = false"></div>
+    <div class="drawer-backdrop" ly-show="app.drawer" ly-on:click="app.closeDrawer()"></div>
 
-    <aside class="sidebar" ly-class=":drawer open" aria-label="Documentation">
+    <aside class="sidebar" ly-bind:class="app.drawer ? 'sidebar open' : 'sidebar'" aria-label="Documentation">
       <div class="sidebar-inner">
         <nav class="side-nav">
-          <template ly-for="row in navList">
-            <template ly-if="row.kind === 'group'">
-              <p class="nav-group" ly-text="row.label"></p>
-            </template>
-            <template ly-if="row.kind === 'link'">
-              <a class="nav-link" ly-attr:href="row.href" ly-class=":row.id===current active" ly-text="row.label"></a>
-            </template>
+          <template ly-for="row in app.navList" ly-key="row.id || row.label">
+            <p class="nav-group" ly-if="row.kind === 'group'" ly-text="row.label"></p>
+            <a class="nav-link" ly-else ly-bind:href="row.href" ly-bind:class="row.id === app.current ? 'nav-link active' : 'nav-link'" ly-text="row.label"></a>
           </template>
         </nav>
       </div>
@@ -91,74 +89,77 @@
     <main class="content">
       <div class="doc doc-content">
         <h1 id="forms-and-binding">Forms &amp; Binding</h1>
-<p class="lead"><code>ly-bind</code> gives you seamless two-way data synchronization across all HTML form controls — text, numbers, textareas, checkboxes, radios and selects.</p>
+        <p class="lead"><code>ly-model</code> provides seamless two-way data synchronization across all HTML form controls — text, textarea, numeric inputs, checkboxes, radios, and selects.</p>
 
-<h2 id="text-inputs">Text inputs</h2>
-<p>Bind an input to a state property. Typing updates state instantly; changing state updates the input.</p>
+        <h2 id="text-inputs">Text inputs</h2>
+        <p>Bind an input to a state property. User typing updates state instantly, while programmatic state mutations update the input control.</p>
 
-<pre class="doc-code" data-title="bind.html"><code class="language-html">&lt;div&gt;
-    &lt;script type="lyap"&gt;
-        state({ username: '' });
+        <pre class="doc-code" data-title="model.html"><code class="language-html">&lt;div&gt;
+    &lt;script&gt;
+        const formDemo = Lyap.scope('formDemo');
+        formDemo.state({ username: '' });
     &lt;/script&gt;
-    &lt;input type="text" ly-bind="username"&gt;
-    &lt;p&gt;Hello, &lt;span ly-text="username"&gt;&lt;/span&gt;!&lt;/p&gt;
+    &lt;input type="text" ly-model="formDemo.username"&gt;
+    &lt;p&gt;Hello, &lt;span ly-text="formDemo.username"&gt;&lt;/span&gt;!&lt;/p&gt;
 &lt;/div&gt;</code></pre>
 
-<div class="example">
-  <div class="example-head"><span>Live preview</span><span class="badge">lyap</span></div>
-  <div class="example-body">
-    <div>
-      <script type="lyap">
-        state({ username: '' });
-      </script>
-      <div class="field">
-        <label>Username</label>
-        <input type="text" ly-bind="username" placeholder="Type something...">
-      </div>
-      <p ly-show="username">Hello, <strong ly-text="username"></strong>!</p>
-    </div>
-  </div>
-</div>
+        <div class="example">
+          <div class="example-head"><span>Live preview</span><span class="badge">lyap</span></div>
+          <div class="example-body">
+            <div>
+              <script>
+                const formDemo = Lyap.scope('formDemo');
+                formDemo.state({ username: '' });
+              </script>
+              <div class="field">
+                <label>Username</label>
+                <input type="text" ly-model.trim="formDemo.username" placeholder="Type something...">
+              </div>
+              <p ly-show="formDemo.username.length > 0">Hello, <strong ly-text="formDemo.username"></strong>!</p>
+            </div>
+          </div>
+        </div>
 
-<h2 id="modifiers">Modifiers</h2>
-<p>Modifiers attach to the directive name after a dot:</p>
-<table class="doc-table">
-  <thead>
-    <tr><th>Modifier</th><th>Purpose</th></tr>
-  </thead>
-  <tbody>
-    <tr><td><code>.trim</code></td><td>Trims surrounding whitespace before writing to state.</td></tr>
-    <tr><td><code>.number</code></td><td>Coerces the value to a number.</td></tr>
-    <tr><td><code>.debounce(ms)</code></td><td>Writes to state after the user pauses for <code>ms</code> milliseconds.</td></tr>
-  </tbody>
-</table>
+        <h2 id="modifiers">Modifiers</h2>
+        <p>Modifiers attach to <code>ly-model</code> to refine synchronization behavior:</p>
+        <table class="doc-table">
+          <thead>
+            <tr><th>Modifier</th><th>Purpose</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>.trim</code></td><td>Trims whitespace from string values before updating state.</td></tr>
+            <tr><td><code>.number</code></td><td>Parses numeric values to finite numbers.</td></tr>
+            <tr><td><code>.lazy</code></td><td>Listens for <code>change</code> instead of <code>input</code> events (syncs on blur/enter).</td></tr>
+          </tbody>
+        </table>
 
-<pre class="doc-code" data-title="modifiers.html"><code class="language-html">&lt;input type="text"   ly-bind.trim="username"&gt;
-&lt;input type="number" ly-bind.number="age"&gt;
-&lt;input type="text"   ly-bind.debounce(300)="search"&gt;</code></pre>
+        <pre class="doc-code" data-title="modifiers.html"><code class="language-html">&lt;input type="text"     ly-model.trim="user.username"&gt;
+&lt;input type="number"   ly-model.number="user.age"&gt;
+&lt;textarea              ly-model.lazy="user.bio"&gt;&lt;/textarea&gt;</code></pre>
 
-<h2 id="checkboxes-radios">Checkboxes &amp; radios</h2>
-<p>A single checkbox binds to a boolean. A checkbox <em>group</em> (same <code>ly-bind</code>, different <code>value</code>) binds to an array. Radios bind to the selected value.</p>
+        <h2 id="checkboxes-radios">Checkboxes &amp; radios</h2>
+        <p>A single checkbox binds to a boolean state property. A checkbox group sharing the same <code>ly-model</code> target array binds to an array of selected values. Radios bind to the selected value.</p>
 
-<pre class="doc-code" data-title="checks.html"><code class="language-html">&lt;!-- Single boolean checkbox --&gt;
+        <pre class="doc-code" data-title="checks.html"><code class="language-html">&lt;!-- Single boolean checkbox --&gt;
 &lt;label&gt;
-    &lt;input type="checkbox" ly-bind="agree"&gt; Accept Terms
+    &lt;input type="checkbox" ly-model="form.agree"&gt; Accept Terms
 &lt;/label&gt;
 
 &lt;!-- Array checkbox group --&gt;
-&lt;label&gt;&lt;input type="checkbox" ly-bind="interests" value="coding"&gt; Coding&lt;/label&gt;
-&lt;label&gt;&lt;input type="checkbox" ly-bind="interests" value="design"&gt; Design&lt;/label&gt;
+&lt;label&gt;&lt;input type="checkbox" ly-model="form.interests" value="coding"&gt; Coding&lt;/label&gt;
+&lt;label&gt;&lt;input type="checkbox" ly-model="form.interests" value="design"&gt; Design&lt;/label&gt;
 
 &lt;!-- Radio group --&gt;
-&lt;label&gt;&lt;input type="radio" ly-bind="role" value="developer"&gt; Developer&lt;/label&gt;
-&lt;label&gt;&lt;input type="radio" ly-bind="role" value="designer"&gt; Designer&lt;/label&gt;</code></pre>
+&lt;label&gt;&lt;input type="radio" ly-model="form.role" value="developer"&gt; Developer&lt;/label&gt;
+&lt;label&gt;&lt;input type="radio" ly-model="form.role" value="designer"&gt; Designer&lt;/label&gt;</code></pre>
 
-<h2 id="full-example">A full form with validation</h2>
-<p>Combine <code>ly-bind</code>, derived validation and <code>ly-show</code> for instant, readable form feedback.</p>
+        <h2 id="full-example">Full form with validation</h2>
+        <p>Combine <code>ly-model</code>, derived calculations, and <code>ly-on:submit.prevent</code> for accessible, reactive form management.</p>
 
-<pre class="doc-code" data-title="profile.html"><code class="language-html">&lt;div&gt;
-    &lt;script type="lyap"&gt;
-        state({
+        <pre class="doc-code" data-title="profile.html"><code class="language-html">&lt;div&gt;
+    &lt;script&gt;
+        const profile = Lyap.scope('profile');
+        profile.state({
             username: '',
             age: 25,
             bio: '',
@@ -167,191 +168,89 @@
             role: 'developer'
         });
 
-        derived({
-            errors() {
-                const errs = {};
-                if (!username) errs.username = 'Username is required';
-                if (age &lt; 18) errs.age = 'Must be at least 18';
-                return errs;
-            },
-            isValid() {
-                return Object.keys(errors).length === 0;
-            }
+        profile.derived({
+            hasErrors: () => !profile.username || profile.age &lt; 18 || !profile.agree
         });
 
-        function handleSubmit($form) {
-            if (!isValid) return;
-            console.log('Submitted values:', $form.data);
-            $form.reset();
-        }
+        profile.actions({
+            handleSubmit() {
+                if (this.hasErrors) return;
+                alert('Saved profile for ' + this.username);
+            }
+        });
     &lt;/script&gt;
 
-    &lt;form ly-on:submit.prevent="handleSubmit"&gt;
+    &lt;form ly-on:submit.prevent="profile.handleSubmit()"&gt;
         &lt;label&gt;Username:&lt;/label&gt;
-        &lt;input type="text" ly-bind.trim="username"&gt;
-        &lt;span class="error" ly-show="errors.username" ly-text="errors.username"&gt;&lt;/span&gt;
+        &lt;input type="text" ly-model.trim="profile.username"&gt;
 
         &lt;label&gt;Age:&lt;/label&gt;
-        &lt;input type="number" ly-bind.number="age"&gt;
+        &lt;input type="number" ly-model.number="profile.age"&gt;
 
-        &lt;button type="submit" ly-attr:disabled="!isValid"&gt;Submit Profile&lt;/button&gt;
+        &lt;label&gt;
+            &lt;input type="checkbox" ly-model="profile.agree"&gt; Agree to terms
+        &lt;/label&gt;
+
+        &lt;button type="submit" ly-bind:disabled="profile.hasErrors"&gt;Submit Profile&lt;/button&gt;
     &lt;/form&gt;
 &lt;/div&gt;</code></pre>
-
-<div class="example">
-  <div class="example-head"><span>Live preview</span><span class="badge">lyap</span></div>
-  <div class="example-body">
-    <div>
-      <script type="lyap">
-        state({
-            username: '',
-            age: 25,
-            bio: '',
-            agree: false,
-            interests: ['coding'],
-            role: 'developer',
-            submitted: false
-        });
-
-        derived({
-            errors() {
-                const errs = {};
-                if (!username) errs.username = 'Username is required';
-                if (age < 18) errs.age = 'Must be at least 18';
-                return errs;
-            },
-            isValid() {
-                return Object.keys(errors).length === 0;
-            }
-        });
-
-        function handleSubmit() {
-            if (!isValid) return;
-            submitted = true;
-        }
-      </script>
-
-      <form ly-on:submit.prevent="handleSubmit">
-        <div class="field">
-          <label>Username</label>
-          <input type="text" ly-bind.trim="username">
-          <span class="error-text" ly-show="errors.username" ly-text="errors.username"></span>
-        </div>
-        <div class="field">
-          <label>Age</label>
-          <input type="number" ly-bind.number="age">
-          <span class="error-text" ly-show="errors.age" ly-text="errors.age"></span>
-        </div>
-        <div class="field">
-          <label>Bio</label>
-          <textarea ly-bind="bio" rows="2" placeholder="A few words about you..."></textarea>
-        </div>
-        <div class="field">
-          <span class="check-row"><input type="checkbox" ly-bind="agree"> Accept terms</span>
-        </div>
-        <div class="field">
-          <label>Interests</label>
-          <div>
-            <label class="check-row"><input type="checkbox" ly-bind="interests" value="coding"> Coding</label>
-            <label class="check-row"><input type="checkbox" ly-bind="interests" value="design"> Design</label>
-            <label class="check-row"><input type="checkbox" ly-bind="interests" value="music"> Music</label>
-          </div>
-        </div>
-        <div class="field">
-          <label>Role</label>
-          <label class="check-row"><input type="radio" name="role" ly-bind="role" value="developer"> Developer</label>
-          <label class="check-row"><input type="radio" name="role" ly-bind="role" value="designer"> Designer</label>
-        </div>
-        <div class="flex wrap">
-          <button class="btn btn-primary btn-sm" type="submit" ly-attr:disabled="!isValid">Submit</button>
-          <span class="muted small" ly-show="submitted">Form submitted! Open the console or check the snackbar.</span>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-<h2 id="form-assistant">The $form assistant</h2>
-<p>Inside a <code>&lt;form&gt;</code>, submit handlers receive a <code>$form</code> helper:</p>
-<table class="doc-table">
-  <thead>
-    <tr><th>Property</th><th>Description</th></tr>
-  </thead>
-  <tbody>
-    <tr><td><code>$form.data</code></td><td>Object snapshot of all named form field values.</td></tr>
-    <tr><td><code>$form.reset()</code></td><td>Resets inputs and scope state to initial values.</td></tr>
-    <tr><td><code>$form.isDirty</code></td><td><code>true</code> if any input has been modified.</td></tr>
-    <tr><td><code>$form.isValid</code></td><td><code>true</code> if HTML5 input validations pass.</td></tr>
-  </tbody>
-</table>
-
-<pre class="doc-code" data-title="form.html"><code class="language-html">&lt;form ly-on:submit.prevent="handleSubmit"&gt;
-    &lt;input name="email" type="email" required&gt;
-    &lt;button type="submit"&gt;Submit&lt;/button&gt;
-&lt;/form&gt;
-
-&lt;script type="lyap"&gt;
-    function handleSubmit($form) {
-        if (!$form.isValid) return;
-        console.log('Values:', $form.data);
-        $form.reset();
-    }
-&lt;/script&gt;</code></pre>
-
-<div class="callout">
-  <svg class="callout-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-  <p><strong>IME-friendly.</strong> <code>ly-bind</code> freezes state mutations while the user is composing text (CJK / IME input), so values never flicker mid-composition.</p>
-</div>
       </div>
-<div class="pagination">
-        <template ly-if="prevLink()">
-          <a class="page-link prev" ly-attr:href="prevLink().href">
+
+      <div class="pagination">
+        <template ly-if="app.prevLink">
+          <a class="page-link prev" ly-bind:href="app.prevLink.href">
             <span class="page-label">← Previous</span>
-            <span class="page-title" ly-text="prevLink().label"></span>
+            <span class="page-title" ly-text="app.prevLink.label"></span>
           </a>
         </template>
-        <template ly-if="nextLink()">
-          <a class="page-link next" ly-attr:href="nextLink().href">
+        <template ly-if="app.nextLink">
+          <a class="page-link next" ly-bind:href="app.nextLink.href">
             <span class="page-label">Next →</span>
-            <span class="page-title" ly-text="nextLink().label"></span>
+            <span class="page-title" ly-text="app.nextLink.label"></span>
           </a>
         </template>
       </div>
 
       <footer class="footer">
         <span>© 2026 <a href="index.html">Lyap</a> — lightweight HTML enhancement.</span>
-        <span>v<span ly-text="version"></span> &middot; Built with Lyap &middot; <a href="https://github.com/lyapjs/Lyap" target="_blank" rel="noopener noreferrer">GitHub</a></span>
+        <span>v<span ly-text="app.version"></span> &middot; Built with Lyap &middot; <a href="https://github.com/lyapjs/Lyap" target="_blank" rel="noopener noreferrer">GitHub</a></span>
       </footer>
     </main>
 
     <aside class="toc" aria-label="On this page">
       <p class="toc-title">On this page</p>
       <div class="toc-links">
-        <template ly-for="item in toc">
-          <a class="toc-link" ly-class=":item.level===3 sub" ly-attr:href="'#' + item.id" ly-text="item.text"></a>
+        <template ly-for="item in app.toc" ly-key="item.id">
+          <a class="toc-link" ly-bind:class="item.level === 3 ? 'toc-link sub' : 'toc-link'" ly-bind:href="'#' + item.id" ly-text="item.text"></a>
         </template>
       </div>
     </aside>
   </div>
 
-    <script type="lyap">
-    state({
-        navList: [],
-        current: LYAP_CURRENT,
-        drawer: false,
-        themeMenu: false,
-        theme: (() => { var t = 'system'; try { t = localStorage.getItem('lyap-theme') || 'system'; } catch (e) {} return t; })(),
-        toc: [],
-        version: LYAP_VERSION
+  <script>
+    const app = Lyap.scope('app');
+    app.state({
+      navList: [],
+      current: window.LYAP_CURRENT || 'forms',
+      drawer: false,
+      themeMenu: false,
+      theme: (() => { var t = 'system'; try { t = localStorage.getItem('lyap-theme') || 'system'; } catch (e) {} return t; })(),
+      toc: [],
+      version: window.LYAP_VERSION || '3.0.0-proto'
     });
 
-    LYAP_NAV.forEach(g => {
-        navList.push({ kind: 'group', label: g.group });
-        g.items.forEach(i => navList.push({ kind: 'link', id: i.id, href: i.href, label: i.label }));
-    });
+    if (window.LYAP_NAV) {
+      window.LYAP_NAV.forEach(function (g) {
+        app.navList.push({ kind: 'group', label: g.group });
+        g.items.forEach(function (i) {
+          app.navList.push({ kind: 'link', id: i.id, href: i.href, label: i.label });
+        });
+      });
+    }
 
-    function applyTheme() {
-        var mode = theme;
+    app.actions({
+      applyTheme() {
+        var mode = this.theme;
         var saved = localStorage.getItem('lyap-theme');
         if (saved) mode = saved;
         var dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -359,84 +258,76 @@
         document.documentElement.dataset.theme = resolved;
         var meta = document.getElementById('meta-theme');
         if (meta) meta.content = resolved === 'dark' ? '#0b0d10' : '#ffffff';
-    }
-
-    function setTheme(mode) {
-        theme = mode;
-        themeMenu = false;
+      },
+      setTheme(mode) {
+        this.theme = mode;
+        this.themeMenu = false;
         localStorage.setItem('lyap-theme', mode);
-        applyTheme();
-    }
+        this.applyTheme();
+      },
+      toggleThemeMenu() {
+        this.themeMenu = !this.themeMenu;
+      },
+      closeDrawer() {
+        this.drawer = false;
+      },
+      toggleDrawer() {
+        this.drawer = !this.drawer;
+      }
+    });
 
-    function toggleThemeMenu() {
-        themeMenu = !themeMenu;
-    }
-
-    function closeDrawer() {
-        drawer = false;
-    }
-
-    function toggleDrawer() {
-        drawer = !drawer;
-    }
-
-    function prevLink() {
+    app.derived({
+      prevLink: () => {
         var idx = -1;
-        for (var i = 0; i < LYAP_FLAT.length; i++) if (LYAP_FLAT[i].id === current) idx = i;
-        if (idx === 0) return null;
-        if (idx === -1) return null;
-        return LYAP_FLAT[idx - 1];
-    }
-
-    function nextLink() {
+        for (var i = 0; i < (window.LYAP_FLAT || []).length; i++) if (window.LYAP_FLAT[i].id === app.current) idx = i;
+        if (idx <= 0) return null;
+        return window.LYAP_FLAT[idx - 1];
+      },
+      nextLink: () => {
         var idx = -1;
-        for (var i = 0; i < LYAP_FLAT.length; i++) if (LYAP_FLAT[i].id === current) idx = i;
-        if (idx === -1) return null;
-        if (idx >= LYAP_FLAT.length - 1) return null;
-        return LYAP_FLAT[idx + 1];
-    }
+        for (var i = 0; i < (window.LYAP_FLAT || []).length; i++) if (window.LYAP_FLAT[i].id === app.current) idx = i;
+        if (idx === -1 || idx >= (window.LYAP_FLAT || []).length - 1) return null;
+        return window.LYAP_FLAT[idx + 1];
+      }
+    });
 
-    mount(() => {
-        applyTheme();
+    app.onMount(() => {
+      app.applyTheme();
 
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () {
-            var saved = 'system';
-            try { saved = localStorage.getItem('lyap-theme') || 'system'; } catch (e) {}
-            if (saved === 'system') applyTheme();
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () {
+        var saved = 'system';
+        try { saved = localStorage.getItem('lyap-theme') || 'system'; } catch (e) {}
+        if (saved === 'system') app.applyTheme();
+      });
+
+      var content = document.querySelector('.doc-content');
+      if (content) {
+        var headings = content.querySelectorAll('h2, h3');
+        headings.forEach(function (h) {
+          if (!h.id) {
+            var slug = (h.textContent || '').trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+            h.id = slug || 'section';
+          }
+          app.toc.push({ id: h.id, text: (h.textContent || '').trim(), level: h.tagName === 'H3' ? 3 : 2 });
         });
 
-        var content = document.querySelector('.doc-content');
-        if (content) {
-            var headings = content.querySelectorAll('h2, h3');
-            var items = [];
-            headings.forEach(function (h) {
-                if (!h.id) {
-                    var slug = (h.textContent || '').trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-                    h.id = slug || 'section';
-                }
-                items.push({ id: h.id, text: (h.textContent || '').trim(), level: h.tagName === 'H3' ? 3 : 2 });
-            });
-            items.forEach(function (i) { toc.push(i); });
-
-            if ('IntersectionObserver' in window) {
-                var spy = new IntersectionObserver(function (entries) {
-                    var visible = entries.filter(function (e) { return e.isIntersecting; })
-                        .sort(function (a, b) { return a.boundingClientRect.top - b.boundingClientRect.top; });
-                    if (visible.length) {
-                        var id = visible[0].target.id;
-                        document.querySelectorAll('.toc-link').forEach(function (l) {
-                            l.classList.toggle('active', l.getAttribute('href') === '#' + id);
-                        });
-                    }
-                }, { rootMargin: '-80px 0px -72% 0px', threshold: 0.05 });
-                headings.forEach(function (h) { spy.observe(h); });
+        if ('IntersectionObserver' in window) {
+          var spy = new IntersectionObserver(function (entries) {
+            var visible = entries.filter(function (e) { return e.isIntersecting; })
+              .sort(function (a, b) { return a.boundingClientRect.top - b.boundingClientRect.top; });
+            if (visible.length) {
+              var id = visible[0].target.id;
+              document.querySelectorAll('.toc-link').forEach(function (l) {
+                l.classList.toggle('active', l.getAttribute('href') === '#' + id);
+              });
             }
+          }, { rootMargin: '-80px 0px -72% 0px', threshold: 0.05 });
+          headings.forEach(function (h) { spy.observe(h); });
         }
+      }
     });
   </script>
 </div>
 
-<script src="assets/site.js"></script>
-<script src="lyap.min.js"></script>
 </body>
 </html>

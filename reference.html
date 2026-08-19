@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Directive Reference — Lyap</title>
-<meta name="description" content="Every Lyap directive at a glance: ly-text, ly-on, ly-bind, ly-class, ly-attr, ly-show, ly-if and ly-for.">
+<meta name="description" content="Complete reference for all directives, lifecycle hooks, and global APIs in Lyap.">
 <meta name="theme-color" id="meta-theme" content="#ffffff">
 <link rel="icon" href="favicons/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="favicons/favicon-32x32.png">
@@ -24,13 +24,15 @@
   document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
 })();
 </script>
+<script src="assets/site.js"></script>
+<script src="lyap.min.js"></script>
 </head>
 <body data-page="reference">
-<div id="app" ly-cloak>
+<div id="app">
 
   <header class="navbar">
     <div class="nav-inner">
-      <button class="nav-icon-btn menu-btn" ly-on:click="toggleDrawer" ly-attr:aria-expanded="drawer" aria-label="Toggle navigation">
+      <button class="nav-icon-btn menu-btn" ly-on:click="app.toggleDrawer()" ly-bind:aria-expanded="app.drawer" aria-label="Toggle navigation">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
       </button>
       <a class="brand" href="index.html">
@@ -40,29 +42,29 @@
       <nav class="nav-links" aria-label="Main">
         <a href="get-started.html">Docs</a>
         <a href="reference.html">Reference</a>
-<a href="https://github.com/lyapjs/Lyap" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href="https://github.com/lyapjs/Lyap" target="_blank" rel="noopener noreferrer">GitHub</a>
       </nav>
       <div class="nav-right">
-        <div class="theme-toggle" ly-on:click.outside=":themeMenu = false">
-          <button class="nav-icon-btn" ly-on:click="toggleThemeMenu" aria-label="Change color theme">
+        <div class="theme-toggle">
+          <button class="nav-icon-btn" ly-on:click="app.toggleThemeMenu()" aria-label="Change color theme">
             <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
             <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
           </button>
-          <div class="theme-menu" ly-show="themeMenu" role="menu">
-            <button class="theme-menu-item" ly-on:click="setTheme('system')" ly-class=":theme==='system' selected" role="menuitemradio" aria-checked="false">
+          <div class="theme-menu" ly-show="app.themeMenu" role="menu">
+            <button class="theme-menu-item" ly-on:click="app.setTheme('system')" ly-bind:class="app.theme === 'system' ? 'theme-menu-item selected' : 'theme-menu-item'" role="menuitemradio" aria-checked="false">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
               <span>System</span>
-              <svg class="check" ly-show="theme === 'system'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <svg class="check" ly-show="app.theme === 'system'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
             </button>
-            <button class="theme-menu-item" ly-on:click="setTheme('light')" ly-class=":theme==='light' selected" role="menuitemradio" aria-checked="false">
+            <button class="theme-menu-item" ly-on:click="app.setTheme('light')" ly-bind:class="app.theme === 'light' ? 'theme-menu-item selected' : 'theme-menu-item'" role="menuitemradio" aria-checked="false">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
               <span>Light</span>
-              <svg class="check" ly-show="theme === 'light'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <svg class="check" ly-show="app.theme === 'light'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
             </button>
-            <button class="theme-menu-item" ly-on:click="setTheme('dark')" ly-class=":theme==='dark' selected" role="menuitemradio" aria-checked="false">
+            <button class="theme-menu-item" ly-on:click="app.setTheme('dark')" ly-bind:class="app.theme === 'dark' ? 'theme-menu-item selected' : 'theme-menu-item'" role="menuitemradio" aria-checked="false">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
               <span>Dark</span>
-              <svg class="check" ly-show="theme === 'dark'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <svg class="check" ly-show="app.theme === 'dark'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
             </button>
           </div>
         </div>
@@ -71,18 +73,14 @@
   </header>
 
   <div class="layout">
-    <div class="drawer-backdrop" ly-show="drawer" ly-on:click.self=":drawer = false"></div>
+    <div class="drawer-backdrop" ly-show="app.drawer" ly-on:click="app.closeDrawer()"></div>
 
-    <aside class="sidebar" ly-class=":drawer open" aria-label="Documentation">
+    <aside class="sidebar" ly-bind:class="app.drawer ? 'sidebar open' : 'sidebar'" aria-label="Documentation">
       <div class="sidebar-inner">
         <nav class="side-nav">
-          <template ly-for="row in navList">
-            <template ly-if="row.kind === 'group'">
-              <p class="nav-group" ly-text="row.label"></p>
-            </template>
-            <template ly-if="row.kind === 'link'">
-              <a class="nav-link" ly-attr:href="row.href" ly-class=":row.id===current active" ly-text="row.label"></a>
-            </template>
+          <template ly-for="row in app.navList" ly-key="row.id || row.label">
+            <p class="nav-group" ly-if="row.kind === 'group'" ly-text="row.label"></p>
+            <a class="nav-link" ly-else ly-bind:href="row.href" ly-bind:class="row.id === app.current ? 'nav-link active' : 'nav-link'" ly-text="row.label"></a>
           </template>
         </nav>
       </div>
@@ -91,176 +89,155 @@
     <main class="content">
       <div class="doc doc-content">
         <h1 id="directive-reference">Directive Reference</h1>
-<p class="lead">Every directive at a glance. Directives are HTML attributes Lyap recognizes when it walks the DOM.</p>
+        <p class="lead">Complete reference guide for Prototype 3 HTML directives, Scopes API, and fine-grained reactivity.</p>
 
-<h2 id="directives">Directives</h2>
-<table class="doc-table">
-  <thead>
-    <tr><th>Directive</th><th>Purpose</th><th>Example</th></tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>ly-cloak</code></td>
-      <td>Hides a container until Lyap initializes (prevents FOUC).</td>
-      <td><code>&lt;div ly-cloak&gt;</code></td>
-    </tr>
-    <tr>
-      <td><code>ly-text</code></td>
-      <td>Sets text content safely — anti-XSS.</td>
-      <td><code>&lt;span ly-text="user.name"&gt;</code></td>
-    </tr>
-    <tr>
-      <td><code>ly-on:*</code></td>
-      <td>Listens to DOM events. Modifiers: <code>.outside</code>, <code>.self</code>, <code>.prevent</code>, <code>.stop</code>, <code>.once</code>, <code>.window</code>, <code>.enter</code>, <code>.escape</code>. Prefix <code>:</code> for inline expressions.</td>
-      <td><code>ly-on:click.outside=":open = false"</code></td>
-    </tr>
-    <tr>
-      <td><code>ly-bind</code></td>
-      <td>Two-way input binding with IME protection. Modifiers: <code>.trim</code>, <code>.number</code>, <code>.debounce(ms)</code>.</td>
-      <td><code>&lt;input ly-bind.trim="username"&gt;</code></td>
-    </tr>
-    <tr>
-      <td><code>ly-class</code></td>
-      <td>Dynamic class toggling with <code>:condition class1 class2</code> tokens.</td>
-      <td><code>ly-class=":isActive active"</code></td>
-    </tr>
-    <tr>
-      <td><code>ly-attr:*</code></td>
-      <td>Binds any element attribute dynamically.</td>
-      <td><code>&lt;button ly-attr:disabled="!isValid"&gt;</code></td>
-    </tr>
-    <tr>
-      <td><code>ly-show</code></td>
-      <td>Toggles CSS visibility (<code>display: none</code>).</td>
-      <td><code>&lt;p ly-show="isOpen"&gt;</code></td>
-    </tr>
-    <tr>
-      <td><code>ly-if</code> / <code>ly-else-if</code> / <code>ly-else</code></td>
-      <td>Conditional DOM insertion / omission via <code>&lt;template&gt;</code>.</td>
-      <td><code>&lt;template ly-if="isLoggedIn"&gt;</code></td>
-    </tr>
-    <tr>
-      <td><code>ly-for</code></td>
-      <td>Iterates arrays, numbers or objects with index and key tracking.</td>
-      <td><code>&lt;template ly-for="item in items"&gt;</code></td>
-    </tr>
-    <tr>
-      <td><code>ly-key</code></td>
-      <td>Stable identity for items rendered by <code>ly-for</code>.</td>
-      <td><code>&lt;div ly-key="item.id"&gt;</code></td>
-    </tr>
-    <tr>
-      <td><code>ly-ref</code></td>
-      <td>Registers a named element reference accessible via <code>$refs</code>.</td>
-      <td><code>&lt;input ly-ref="searchInput"&gt;</code></td>
-    </tr>
-  </tbody>
-</table>
+        <h2 id="directives">Directives</h2>
+        <table class="doc-table">
+          <thead>
+            <tr><th>Directive</th><th>Purpose</th><th>Example</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>ly-text</code></td>
+              <td>Sets text content safely with automatic HTML escaping.</td>
+              <td><code>&lt;span ly-text="user.name"&gt;</code></td>
+            </tr>
+            <tr>
+              <td><code>ly-show</code></td>
+              <td>Toggles element visibility using the <code>hidden</code> property.</td>
+              <td><code>&lt;p ly-show="isOpen"&gt;</code></td>
+            </tr>
+            <tr>
+              <td><code>ly-bind:*</code></td>
+              <td>Binds classes, attributes, properties, and styles dynamically.</td>
+              <td><code>ly-bind:disabled="!isValid"</code></td>
+            </tr>
+            <tr>
+              <td><code>ly-model</code></td>
+              <td>Two-way form control binding with IME composition support. Modifiers: <code>.trim</code>, <code>.number</code>, <code>.lazy</code>.</td>
+              <td><code>&lt;input ly-model.trim="username"&gt;</code></td>
+            </tr>
+            <tr>
+              <td><code>ly-on:*</code></td>
+              <td>Listens to DOM events. Modifiers: <code>.prevent</code>, <code>.stop</code>, <code>.self</code>, <code>.once</code>, <code>.capture</code>, <code>.passive</code>.</td>
+              <td><code>ly-on:submit.prevent="save()"</code></td>
+            </tr>
+            <tr>
+              <td><code>ly-if</code> / <code>ly-if-else</code> / <code>ly-else</code></td>
+              <td>Conditional branch rendering anchored in DOM comments.</td>
+              <td><code>&lt;div ly-if="isLoggedIn"&gt;</code></td>
+            </tr>
+            <tr>
+              <td><code>ly-for</code> / <code>ly-key</code></td>
+              <td>Keyed in-place collection looping without full list re-rendering.</td>
+              <td><code>ly-for="item in items" ly-key="item.id"</code></td>
+            </tr>
+            <tr>
+              <td><code>ly-ref:*</code></td>
+              <td>Attaches an element reference to <code>this.$refs.NAME</code>.</td>
+              <td><code>&lt;input ly-ref:searchInput&gt;</code></td>
+            </tr>
+          </tbody>
+        </table>
 
-<h2 id="script-api">Lyap script API</h2>
-<p>Inside a <code>&lt;script type="lyap"&gt;</code> block:</p>
-<table class="doc-table">
-  <thead>
-    <tr><th>API</th><th>Purpose</th></tr>
-  </thead>
-  <tbody>
-    <tr><td><code>state({...})</code></td><td>Declares reactive state properties.</td></tr>
-    <tr><td><code>derived({...})</code></td><td>Declares read-only computed values, lazily memoized and auto-updating.</td></tr>
-    <tr><td><code>init(fn)</code></td><td>Runs during scope creation, before the DOM is live.</td></tr>
-    <tr><td><code>mount(fn)</code></td><td>Runs after the element and scope are attached to the DOM.</td></tr>
-    <tr><td><code>cleanup(fn)</code></td><td>Registers teardown for resources created inside <code>mount()</code>.</td></tr>
-    <tr><td><code>destroy(fn)</code></td><td>Runs when the container scope is destroyed.</td></tr>
-    <tr><td><code>function name() {...}</code></td><td>Declares a callable action with direct access to state.</td></tr>
-  </tbody>
-</table>
+        <h2 id="scope-api">Scope API</h2>
+        <p>Created via <code>const scope = Lyap.scope('name', targetElement?)</code>:</p>
+        <table class="doc-table">
+          <thead>
+            <tr><th>Method</th><th>Purpose</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>scope.state({...})</code></td><td>Registers reactive state properties wrapped in deep proxies.</td></tr>
+            <tr><td><code>scope.derived({...})</code></td><td>Registers lazy, memoized computed properties.</td></tr>
+            <tr><td><code>scope.actions({...})</code></td><td>Registers action methods executed with <code>this</code> bound to state.</td></tr>
+            <tr><td><code>scope.init(fn)</code></td><td>Runs during scope creation before directives are bound.</td></tr>
+            <tr><td><code>scope.onMount(fn)</code></td><td>Runs after the element and scope are mounted to the DOM.</td></tr>
+            <tr><td><code>scope.cleanup(fn)</code></td><td>Registers resource disposal callbacks for the scope.</td></tr>
+            <tr><td><code>scope.onDestroy(fn)</code></td><td>Runs when the container element and scope are destroyed.</td></tr>
+          </tbody>
+        </table>
 
-<h2 id="magic-variables">Magic variables</h2>
-<table class="doc-table">
-  <thead>
-    <tr><th>Variable</th><th>Context</th><th>Purpose</th></tr>
-  </thead>
-  <tbody>
-    <tr><td><code>$event</code></td><td>Event handlers</td><td>The native DOM event.</td></tr>
-    <tr><td><code>$el</code></td><td>Any directive / callback</td><td>The current element.</td></tr>
-    <tr><td><code>$refs</code></td><td>Whole scope</td><td>Named element reference map.</td></tr>
-    <tr><td><code>$scope</code></td><td>Actions / callbacks</td><td>Container state proxy.</td></tr>
-    <tr><td><code>$form</code></td><td>Form handlers</td><td>Form data, reset, dirty &amp; validity helpers.</td></tr>
-    <tr><td><code>$nextTick</code></td><td>Script functions</td><td>Promise resolving after the reactive flush.</td></tr>
-  </tbody>
-</table>
+        <h2 id="magic-variables">Magic variables</h2>
+        <table class="doc-table">
+          <thead>
+            <tr><th>Variable</th><th>Context</th><th>Purpose</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>$event</code></td><td>Event handlers</td><td>The native DOM Event object.</td></tr>
+            <tr><td><code>$el</code></td><td>Directives / callbacks</td><td>The active DOM Element.</td></tr>
+            <tr><td><code>$refs</code></td><td>Actions / callbacks</td><td>Named DOM element reference map.</td></tr>
+            <tr><td><code>$form</code></td><td>Form handlers</td><td>Form submission assistant.</td></tr>
+            <tr><td><code>$nextTick</code></td><td>Actions / scripts</td><td>Promise resolving after DOM mutations flush.</td></tr>
+          </tbody>
+        </table>
 
-<h2 id="global-api">Global API</h2>
-<p>The library exposes itself as <code>Lyap</code> on <code>window</code>:</p>
-<pre class="doc-code" data-title="console"><code class="language-js">Lyap.version            // '2.0.0-proto'
-Lyap.walk(element)      // process a subtree manually
-Lyap.evaluate(expr, ctx) // evaluate a lyap expression
-Lyap.signal(value)      // low-level reactive signal
-Lyap.effect(fn)         // run a reactive effect
-Lyap.store(obj)         // create a reactive store
-Lyap.computed(fn)       // create a computed value</code></pre>
-
-<h2 id="notes">Notes</h2>
-<ul>
-  <li><strong>Structural over convenience</strong> — behavior follows HTML structure and scope boundaries.</li>
-  <li><strong>CSP compliant</strong> — no <code>eval()</code>, no <code>new Function()</code> anywhere in the runtime.</li>
-  <li><strong>Guard rails</strong> — duplicate state keys across scripts in one container trigger a console warning.</li>
-  <li><strong>Scope inheritance</strong> — children read parent state through prototypal delegation.</li>
-</ul>
-
-<div class="callout">
-  <svg class="callout-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-  <p>Missing something? Open an issue on <a href="https://github.com/lyapjs/Lyap" target="_blank" rel="noopener noreferrer">GitHub</a>.</p>
-</div>
+        <h2 id="global-api">Global API</h2>
+        <p>Exported on <code>window.Lyap</code>:</p>
+        <pre class="doc-code" data-title="console"><code class="language-js">Lyap.version             // '3.0.0-proto'
+Lyap.scope(name, el?)    // register or retrieve named scope
+Lyap.mount(root?, opts?) // mount DOM tree
+Lyap.nextTick()          // async flush scheduler
+Lyap.signal(value)       // low-level reactive signal
+Lyap.computed(fn)        // reactive computed signal
+Lyap.effect(fn)          // reactive effect runner
+Lyap.store(obj)          // deep reactive proxy</code></pre>
       </div>
-<div class="pagination">
-        <template ly-if="prevLink()">
-          <a class="page-link prev" ly-attr:href="prevLink().href">
+
+      <div class="pagination">
+        <template ly-if="app.prevLink">
+          <a class="page-link prev" ly-bind:href="app.prevLink.href">
             <span class="page-label">← Previous</span>
-            <span class="page-title" ly-text="prevLink().label"></span>
+            <span class="page-title" ly-text="app.prevLink.label"></span>
           </a>
         </template>
-        <template ly-if="nextLink()">
-          <a class="page-link next" ly-attr:href="nextLink().href">
+        <template ly-if="app.nextLink">
+          <a class="page-link next" ly-bind:href="app.nextLink.href">
             <span class="page-label">Next →</span>
-            <span class="page-title" ly-text="nextLink().label"></span>
+            <span class="page-title" ly-text="app.nextLink.label"></span>
           </a>
         </template>
       </div>
 
       <footer class="footer">
         <span>© 2026 <a href="index.html">Lyap</a> — lightweight HTML enhancement.</span>
-        <span>v<span ly-text="version"></span> &middot; Built with Lyap &middot; <a href="https://github.com/lyapjs/Lyap" target="_blank" rel="noopener noreferrer">GitHub</a></span>
+        <span>v<span ly-text="app.version"></span> &middot; Built with Lyap &middot; <a href="https://github.com/lyapjs/Lyap" target="_blank" rel="noopener noreferrer">GitHub</a></span>
       </footer>
     </main>
 
     <aside class="toc" aria-label="On this page">
       <p class="toc-title">On this page</p>
       <div class="toc-links">
-        <template ly-for="item in toc">
-          <a class="toc-link" ly-class=":item.level===3 sub" ly-attr:href="'#' + item.id" ly-text="item.text"></a>
+        <template ly-for="item in app.toc" ly-key="item.id">
+          <a class="toc-link" ly-bind:class="item.level === 3 ? 'toc-link sub' : 'toc-link'" ly-bind:href="'#' + item.id" ly-text="item.text"></a>
         </template>
       </div>
     </aside>
   </div>
 
-    <script type="lyap">
-    state({
-        navList: [],
-        current: LYAP_CURRENT,
-        drawer: false,
-        themeMenu: false,
-        theme: (() => { var t = 'system'; try { t = localStorage.getItem('lyap-theme') || 'system'; } catch (e) {} return t; })(),
-        toc: [],
-        version: LYAP_VERSION
+  <script>
+    const app = Lyap.scope('app');
+    app.state({
+      navList: [],
+      current: window.LYAP_CURRENT || 'reference',
+      drawer: false,
+      themeMenu: false,
+      theme: (() => { var t = 'system'; try { t = localStorage.getItem('lyap-theme') || 'system'; } catch (e) {} return t; })(),
+      toc: [],
+      version: window.LYAP_VERSION || '3.0.0-proto'
     });
 
-    LYAP_NAV.forEach(g => {
-        navList.push({ kind: 'group', label: g.group });
-        g.items.forEach(i => navList.push({ kind: 'link', id: i.id, href: i.href, label: i.label }));
-    });
+    if (window.LYAP_NAV) {
+      window.LYAP_NAV.forEach(function (g) {
+        app.navList.push({ kind: 'group', label: g.group });
+        g.items.forEach(function (i) {
+          app.navList.push({ kind: 'link', id: i.id, href: i.href, label: i.label });
+        });
+      });
+    }
 
-    function applyTheme() {
-        var mode = theme;
+    app.actions({
+      applyTheme() {
+        var mode = this.theme;
         var saved = localStorage.getItem('lyap-theme');
         if (saved) mode = saved;
         var dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -268,84 +245,76 @@ Lyap.computed(fn)       // create a computed value</code></pre>
         document.documentElement.dataset.theme = resolved;
         var meta = document.getElementById('meta-theme');
         if (meta) meta.content = resolved === 'dark' ? '#0b0d10' : '#ffffff';
-    }
-
-    function setTheme(mode) {
-        theme = mode;
-        themeMenu = false;
+      },
+      setTheme(mode) {
+        this.theme = mode;
+        this.themeMenu = false;
         localStorage.setItem('lyap-theme', mode);
-        applyTheme();
-    }
+        this.applyTheme();
+      },
+      toggleThemeMenu() {
+        this.themeMenu = !this.themeMenu;
+      },
+      closeDrawer() {
+        this.drawer = false;
+      },
+      toggleDrawer() {
+        this.drawer = !this.drawer;
+      }
+    });
 
-    function toggleThemeMenu() {
-        themeMenu = !themeMenu;
-    }
-
-    function closeDrawer() {
-        drawer = false;
-    }
-
-    function toggleDrawer() {
-        drawer = !drawer;
-    }
-
-    function prevLink() {
+    app.derived({
+      prevLink: () => {
         var idx = -1;
-        for (var i = 0; i < LYAP_FLAT.length; i++) if (LYAP_FLAT[i].id === current) idx = i;
-        if (idx === 0) return null;
-        if (idx === -1) return null;
-        return LYAP_FLAT[idx - 1];
-    }
-
-    function nextLink() {
+        for (var i = 0; i < (window.LYAP_FLAT || []).length; i++) if (window.LYAP_FLAT[i].id === app.current) idx = i;
+        if (idx <= 0) return null;
+        return window.LYAP_FLAT[idx - 1];
+      },
+      nextLink: () => {
         var idx = -1;
-        for (var i = 0; i < LYAP_FLAT.length; i++) if (LYAP_FLAT[i].id === current) idx = i;
-        if (idx === -1) return null;
-        if (idx >= LYAP_FLAT.length - 1) return null;
-        return LYAP_FLAT[idx + 1];
-    }
+        for (var i = 0; i < (window.LYAP_FLAT || []).length; i++) if (window.LYAP_FLAT[i].id === app.current) idx = i;
+        if (idx === -1 || idx >= (window.LYAP_FLAT || []).length - 1) return null;
+        return window.LYAP_FLAT[idx + 1];
+      }
+    });
 
-    mount(() => {
-        applyTheme();
+    app.onMount(() => {
+      app.applyTheme();
 
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () {
-            var saved = 'system';
-            try { saved = localStorage.getItem('lyap-theme') || 'system'; } catch (e) {}
-            if (saved === 'system') applyTheme();
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () {
+        var saved = 'system';
+        try { saved = localStorage.getItem('lyap-theme') || 'system'; } catch (e) {}
+        if (saved === 'system') app.applyTheme();
+      });
+
+      var content = document.querySelector('.doc-content');
+      if (content) {
+        var headings = content.querySelectorAll('h2, h3');
+        headings.forEach(function (h) {
+          if (!h.id) {
+            var slug = (h.textContent || '').trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+            h.id = slug || 'section';
+          }
+          app.toc.push({ id: h.id, text: (h.textContent || '').trim(), level: h.tagName === 'H3' ? 3 : 2 });
         });
 
-        var content = document.querySelector('.doc-content');
-        if (content) {
-            var headings = content.querySelectorAll('h2, h3');
-            var items = [];
-            headings.forEach(function (h) {
-                if (!h.id) {
-                    var slug = (h.textContent || '').trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-                    h.id = slug || 'section';
-                }
-                items.push({ id: h.id, text: (h.textContent || '').trim(), level: h.tagName === 'H3' ? 3 : 2 });
-            });
-            items.forEach(function (i) { toc.push(i); });
-
-            if ('IntersectionObserver' in window) {
-                var spy = new IntersectionObserver(function (entries) {
-                    var visible = entries.filter(function (e) { return e.isIntersecting; })
-                        .sort(function (a, b) { return a.boundingClientRect.top - b.boundingClientRect.top; });
-                    if (visible.length) {
-                        var id = visible[0].target.id;
-                        document.querySelectorAll('.toc-link').forEach(function (l) {
-                            l.classList.toggle('active', l.getAttribute('href') === '#' + id);
-                        });
-                    }
-                }, { rootMargin: '-80px 0px -72% 0px', threshold: 0.05 });
-                headings.forEach(function (h) { spy.observe(h); });
+        if ('IntersectionObserver' in window) {
+          var spy = new IntersectionObserver(function (entries) {
+            var visible = entries.filter(function (e) { return e.isIntersecting; })
+              .sort(function (a, b) { return a.boundingClientRect.top - b.boundingClientRect.top; });
+            if (visible.length) {
+              var id = visible[0].target.id;
+              document.querySelectorAll('.toc-link').forEach(function (l) {
+                l.classList.toggle('active', l.getAttribute('href') === '#' + id);
+              });
             }
+          }, { rootMargin: '-80px 0px -72% 0px', threshold: 0.05 });
+          headings.forEach(function (h) { spy.observe(h); });
         }
+      }
     });
   </script>
 </div>
 
-<script src="assets/site.js"></script>
-<script src="lyap.min.js"></script>
 </body>
 </html>

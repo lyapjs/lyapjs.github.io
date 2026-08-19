@@ -16,7 +16,7 @@
       items: [
         { id: 'state', href: 'state.html', label: 'State & Derived' },
         { id: 'lifecycle', href: 'lifecycle.html', label: 'Lifecycle & Scopes' },
-        { id: 'text', href: 'text.html', label: 'Text, Show & Cloak' },
+        { id: 'text', href: 'text.html', label: 'Text & Show' },
         { id: 'events', href: 'events.html', label: 'Events & Actions' },
         { id: 'conditionals', href: 'conditionals.html', label: 'Conditionals & Loops' },
         { id: 'forms', href: 'forms.html', label: 'Forms & Binding' },
@@ -39,12 +39,32 @@
 
   global.LYAP_NAV = NAV;
   global.LYAP_FLAT = FLAT;
-  global.LYAP_VERSION = '2.0.0-proto';
+  global.LYAP_VERSION = '3.0.0-proto';
 
+  var currentOverride = null;
   function currentPage() {
-    return document.body ? (document.body.getAttribute('data-page') || 'index') : 'index';
+    if (currentOverride) return currentOverride;
+    if (document.body && document.body.getAttribute('data-page')) {
+      return document.body.getAttribute('data-page');
+    }
+    if (typeof location !== 'undefined' && location.pathname) {
+      var p = location.pathname.split('/').pop() || 'index.html';
+      var clean = p.split('?')[0].replace(/\.html$/, '');
+      if (clean) return clean;
+    }
+    return 'index';
   }
-  global.LYAP_CURRENT = currentPage();
+
+  try {
+    Object.defineProperty(global, 'LYAP_CURRENT', {
+      get: currentPage,
+      set: function (v) { currentOverride = v; },
+      configurable: true,
+      enumerable: true
+    });
+  } catch (e) {
+    global.LYAP_CURRENT = 'index';
+  }
 
   /* ------------------------------------------------------------------ *
    *  Syntax highlighting (tiny, dependency-free, single-pass tokenizer) *

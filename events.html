@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Events &amp; Actions — Lyap</title>
-<meta name="description" content="Attach event listeners with ly-on, use inline actions and modifiers like .outside, .self, .prevent and .once.">
+<meta name="description" content="Attach event listeners and modifiers with ly-on in Lyap.">
 <meta name="theme-color" id="meta-theme" content="#ffffff">
 <link rel="icon" href="favicons/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="favicons/favicon-32x32.png">
@@ -24,13 +24,15 @@
   document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
 })();
 </script>
+<script src="assets/site.js"></script>
+<script src="lyap.min.js"></script>
 </head>
 <body data-page="events">
-<div id="app" ly-cloak>
+<div id="app">
 
   <header class="navbar">
     <div class="nav-inner">
-      <button class="nav-icon-btn menu-btn" ly-on:click="toggleDrawer" ly-attr:aria-expanded="drawer" aria-label="Toggle navigation">
+      <button class="nav-icon-btn menu-btn" ly-on:click="app.toggleDrawer()" ly-bind:aria-expanded="app.drawer" aria-label="Toggle navigation">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
       </button>
       <a class="brand" href="index.html">
@@ -40,29 +42,29 @@
       <nav class="nav-links" aria-label="Main">
         <a href="get-started.html">Docs</a>
         <a href="reference.html">Reference</a>
-<a href="https://github.com/lyapjs/Lyap" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href="https://github.com/lyapjs/Lyap" target="_blank" rel="noopener noreferrer">GitHub</a>
       </nav>
       <div class="nav-right">
-        <div class="theme-toggle" ly-on:click.outside=":themeMenu = false">
-          <button class="nav-icon-btn" ly-on:click="toggleThemeMenu" aria-label="Change color theme">
+        <div class="theme-toggle">
+          <button class="nav-icon-btn" ly-on:click="app.toggleThemeMenu()" aria-label="Change color theme">
             <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
             <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
           </button>
-          <div class="theme-menu" ly-show="themeMenu" role="menu">
-            <button class="theme-menu-item" ly-on:click="setTheme('system')" ly-class=":theme==='system' selected" role="menuitemradio" aria-checked="false">
+          <div class="theme-menu" ly-show="app.themeMenu" role="menu">
+            <button class="theme-menu-item" ly-on:click="app.setTheme('system')" ly-bind:class="app.theme === 'system' ? 'theme-menu-item selected' : 'theme-menu-item'" role="menuitemradio" aria-checked="false">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
               <span>System</span>
-              <svg class="check" ly-show="theme === 'system'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <svg class="check" ly-show="app.theme === 'system'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
             </button>
-            <button class="theme-menu-item" ly-on:click="setTheme('light')" ly-class=":theme==='light' selected" role="menuitemradio" aria-checked="false">
+            <button class="theme-menu-item" ly-on:click="app.setTheme('light')" ly-bind:class="app.theme === 'light' ? 'theme-menu-item selected' : 'theme-menu-item'" role="menuitemradio" aria-checked="false">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
               <span>Light</span>
-              <svg class="check" ly-show="theme === 'light'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <svg class="check" ly-show="app.theme === 'light'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
             </button>
-            <button class="theme-menu-item" ly-on:click="setTheme('dark')" ly-class=":theme==='dark' selected" role="menuitemradio" aria-checked="false">
+            <button class="theme-menu-item" ly-on:click="app.setTheme('dark')" ly-bind:class="app.theme === 'dark' ? 'theme-menu-item selected' : 'theme-menu-item'" role="menuitemradio" aria-checked="false">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
               <span>Dark</span>
-              <svg class="check" ly-show="theme === 'dark'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <svg class="check" ly-show="app.theme === 'dark'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
             </button>
           </div>
         </div>
@@ -71,18 +73,14 @@
   </header>
 
   <div class="layout">
-    <div class="drawer-backdrop" ly-show="drawer" ly-on:click.self=":drawer = false"></div>
+    <div class="drawer-backdrop" ly-show="app.drawer" ly-on:click="app.closeDrawer()"></div>
 
-    <aside class="sidebar" ly-class=":drawer open" aria-label="Documentation">
+    <aside class="sidebar" ly-bind:class="app.drawer ? 'sidebar open' : 'sidebar'" aria-label="Documentation">
       <div class="sidebar-inner">
         <nav class="side-nav">
-          <template ly-for="row in navList">
-            <template ly-if="row.kind === 'group'">
-              <p class="nav-group" ly-text="row.label"></p>
-            </template>
-            <template ly-if="row.kind === 'link'">
-              <a class="nav-link" ly-attr:href="row.href" ly-class=":row.id===current active" ly-text="row.label"></a>
-            </template>
+          <template ly-for="row in app.navList" ly-key="row.id || row.label">
+            <p class="nav-group" ly-if="row.kind === 'group'" ly-text="row.label"></p>
+            <a class="nav-link" ly-else ly-bind:href="row.href" ly-bind:class="row.id === app.current ? 'nav-link active' : 'nav-link'" ly-text="row.label"></a>
           </template>
         </nav>
       </div>
@@ -91,176 +89,134 @@
     <main class="content">
       <div class="doc doc-content">
         <h1 id="events-and-actions">Events &amp; Actions</h1>
-<p class="lead">Attach event listeners declaratively with <code>ly-on:&lt;event&gt;</code>. Handlers point to functions in the container's script, or inline a micro-expression with the <code>:</code> prefix.</p>
+        <p class="lead">Attach event listeners declaratively with <code>ly-on:&lt;event&gt;</code>. Handlers invoke action methods or inline expressions safely.</p>
 
-<h2 id="basic-usage">Basic usage</h2>
-<p>Point <code>ly-on:click</code> (or <code>ly-on:input</code>, <code>ly-on:submit</code>, <code>ly-on:keydown</code>, &hellip;) at a function declared in the container's <code>&lt;script type="lyap"&gt;</code> block.</p>
+        <h2 id="basic-usage">Basic usage</h2>
+        <p>Bind any DOM event using <code>ly-on:&lt;event&gt;="action()"</code>.</p>
 
-<pre class="doc-code" data-title="events.html"><code class="language-html">&lt;div&gt;
-    &lt;script type="lyap"&gt;
-        function save() {
-            console.log('Saved!');
-        }
-        function increment() {
-            count++;
-        }
+        <pre class="doc-code" data-title="events.html"><code class="language-html">&lt;div&gt;
+    &lt;script&gt;
+        const app = Lyap.scope('app');
+        app.state({ count: 0 });
+        app.actions({
+            save() {
+                console.log('Saved!');
+            },
+            increment() {
+                this.count++;
+            }
+        });
     &lt;/script&gt;
 
-    &lt;button ly-on:click="save"&gt;Save Profile&lt;/button&gt;
-    &lt;button ly-on:click="increment"&gt;Increase&lt;/button&gt;
+    &lt;button ly-on:click="app.save()"&gt;Save Profile&lt;/button&gt;
+    &lt;button ly-on:click="app.increment()"&gt;Increase&lt;/button&gt;
 &lt;/div&gt;</code></pre>
 
-<h2 id="inline-actions">Inline actions</h2>
-<p>Prefix an expression with <code>:</code> to execute it inline — perfect for short statements without a named function.</p>
-
-<pre class="doc-code" data-title="inline.html"><code class="language-html">&lt;button ly-on:click=":count++"&gt; + &lt;/button&gt;
-&lt;button ly-on:click=":open = !open"&gt; Toggle &lt;/button&gt;
-&lt;input ly-on:input=":search = $event.target.value"&gt;</code></pre>
-
-<div class="example">
-  <div class="example-head"><span>Live preview</span><span class="badge">lyap</span></div>
-  <div class="example-body">
-    <div>
-      <script type="lyap">
-        state({ count: 0 });
-      </script>
-      <p>Count: <strong ly-text="count"></strong></p>
-      <div class="flex wrap">
-        <button class="btn btn-primary btn-sm" ly-on:click=":count++"> + </button>
-        <button class="btn btn-ghost btn-sm" ly-on:click=":count = 0">Reset</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<h2 id="event-modifiers">Event modifiers</h2>
-<p>Append modifiers after a dot in the event name. Multiple modifiers can be combined.</p>
-
-<table class="doc-table">
-  <thead>
-    <tr><th>Modifier</th><th>Purpose</th></tr>
-  </thead>
-  <tbody>
-    <tr><td><code>.outside</code></td><td>Fires only for clicks <em>outside</em> the element — great for closing dropdowns and menus.</td></tr>
-    <tr><td><code>.self</code></td><td>Fires only when <code>$event.target</code> is the element itself, ignoring child clicks.</td></tr>
-    <tr><td><code>.prevent</code></td><td>Calls <code>$event.preventDefault()</code>.</td></tr>
-    <tr><td><code>.stop</code></td><td>Calls <code>$event.stopPropagation()</code>.</td></tr>
-    <tr><td><code>.once</code></td><td>Listens at most once, then unbinds.</td></tr>
-    <tr><td><code>.window</code></td><td>Attaches the listener to <code>window</code> instead of the element.</td></tr>
-    <tr><td><code>.enter</code> / <code>.escape</code></td><td>Keyboard shortcuts that fire only on the given key.</td></tr>
-  </tbody>
-</table>
-
-<h3>Click outside</h3>
-<pre class="doc-code" data-title="outside.html"><code class="language-html">&lt;div class="dropdown-menu" ly-show="open" ly-on:click.outside=":open = false"&gt;
-    &lt;a href="#profile"&gt;Profile&lt;/a&gt;
-&lt;/div&gt;</code></pre>
-
-<div class="example">
-  <div class="example-head"><span>Live preview</span><span class="badge">lyap</span></div>
-  <div class="example-body">
-    <div>
-      <script type="lyap">
-        state({ open: false });
-      </script>
-      <div class="flex wrap">
-        <button class="btn btn-primary btn-sm" ly-on:click=":open = !open">Toggle menu</button>
-        <div style="position:relative; display:inline-block;">
-          <div class="example" ly-show="open" ly-on:click.outside=":open = false" style="position:absolute; top:4px; left:0; min-width:180px; margin:0; z-index:20;">
-            <div class="example-body" style="padding:10px;">
-              <a href="#" ly-on:click.prevent=":open = false" style="display:block; margin:4px 0;">Profile</a>
-              <a href="#" ly-on:click.prevent=":open = false" style="display:block; margin:4px 0;">Settings</a>
-              <a href="#" ly-on:click.prevent=":open = false" style="display:block; margin:4px 0;">Sign out</a>
+        <div class="example">
+          <div class="example-head"><span>Live preview</span><span class="badge">lyap</span></div>
+          <div class="example-body">
+            <div>
+              <script>
+                const eventsDemo = Lyap.scope('eventsDemo');
+                eventsDemo.state({ count: 0 });
+                eventsDemo.actions({
+                  inc() { this.count++; },
+                  reset() { this.count = 0; }
+                });
+              </script>
+              <p>Count: <strong ly-text="eventsDemo.count"></strong></p>
+              <div class="flex wrap">
+                <button class="btn btn-primary btn-sm" ly-on:click="eventsDemo.inc()"> + </button>
+                <button class="btn btn-ghost btn-sm" ly-on:click="eventsDemo.reset()">Reset</button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
-</div>
 
-<h3>Self and prevent</h3>
-<pre class="doc-code" data-title="modal.html"><code class="language-html">&lt;!-- Modal backdrop: only the backdrop itself closes the modal --&gt;
-&lt;div class="modal-backdrop" ly-on:click.self=":open = false"&gt;
+        <h2 id="event-modifiers">Event modifiers</h2>
+        <p>Append modifiers after a dot in the event name:</p>
+
+        <table class="doc-table">
+          <thead>
+            <tr><th>Modifier</th><th>Purpose</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>.prevent</code></td><td>Calls <code>event.preventDefault()</code>.</td></tr>
+            <tr><td><code>.stop</code></td><td>Calls <code>event.stopPropagation()</code>.</td></tr>
+            <tr><td><code>.self</code></td><td>Runs handler only if <code>event.target === element</code>.</td></tr>
+            <tr><td><code>.once</code></td><td>Removes the listener after its first invocation.</td></tr>
+            <tr><td><code>.capture</code></td><td>Registers the listener in capture mode.</td></tr>
+            <tr><td><code>.passive</code></td><td>Registers the listener as passive.</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Self and prevent</h3>
+        <pre class="doc-code" data-title="modal.html"><code class="language-html">&lt;!-- Modal backdrop: only clicks on backdrop itself trigger handler --&gt;
+&lt;div class="modal-backdrop" ly-on:click.self="modal.close()"&gt;
     &lt;div class="modal-card"&gt;Content&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;!-- Prevent the browser from submitting the form --&gt;
-&lt;form ly-on:submit.prevent="handleSubmit"&gt;
+&lt;!-- Prevent default form submission --&gt;
+&lt;form ly-on:submit.prevent="profile.handleSubmit()"&gt;
     &lt;button type="submit"&gt;Submit&lt;/button&gt;
 &lt;/form&gt;</code></pre>
-
-<h3>Enter key</h3>
-<pre class="doc-code" data-title="enter.html"><code class="language-html">&lt;input ly-on:keydown.enter="submitForm"&gt;</code></pre>
-
-<div class="example">
-  <div class="example-head"><span>Live preview</span><span class="badge">lyap</span></div>
-  <div class="example-body">
-    <div>
-      <script type="lyap">
-        state({ submitted: '' });
-      </script>
-      <input class="field" type="text" placeholder="Type and press Enter" ly-on:keydown.enter=":submitted = $event.target.value + ' (pressed enter)'">
-      <p ly-show="submitted" ly-text="submitted" class="muted small"></p>
-    </div>
-  </div>
-</div>
-
-<h2 id="magic-event">The event object</h2>
-<p>Inside handlers, <code>$event</code> gives you the native DOM event, and <code>$el</code> the element itself. See <a href="magic.html">Magic Variables</a> for the full list.</p>
-
-<pre class="doc-code" data-title="event.html"><code class="language-html">&lt;input ly-on:input=":search = $event.target.value"&gt;
-&lt;button ly-on:click=":$el.blur()"&gt;Blur me&lt;/button&gt;</code></pre>
       </div>
-<div class="pagination">
-        <template ly-if="prevLink()">
-          <a class="page-link prev" ly-attr:href="prevLink().href">
+
+      <div class="pagination">
+        <template ly-if="app.prevLink">
+          <a class="page-link prev" ly-bind:href="app.prevLink.href">
             <span class="page-label">← Previous</span>
-            <span class="page-title" ly-text="prevLink().label"></span>
+            <span class="page-title" ly-text="app.prevLink.label"></span>
           </a>
         </template>
-        <template ly-if="nextLink()">
-          <a class="page-link next" ly-attr:href="nextLink().href">
+        <template ly-if="app.nextLink">
+          <a class="page-link next" ly-bind:href="app.nextLink.href">
             <span class="page-label">Next →</span>
-            <span class="page-title" ly-text="nextLink().label"></span>
+            <span class="page-title" ly-text="app.nextLink.label"></span>
           </a>
         </template>
       </div>
 
       <footer class="footer">
         <span>© 2026 <a href="index.html">Lyap</a> — lightweight HTML enhancement.</span>
-        <span>v<span ly-text="version"></span> &middot; Built with Lyap &middot; <a href="https://github.com/lyapjs/Lyap" target="_blank" rel="noopener noreferrer">GitHub</a></span>
+        <span>v<span ly-text="app.version"></span> &middot; Built with Lyap &middot; <a href="https://github.com/lyapjs/Lyap" target="_blank" rel="noopener noreferrer">GitHub</a></span>
       </footer>
     </main>
 
     <aside class="toc" aria-label="On this page">
       <p class="toc-title">On this page</p>
       <div class="toc-links">
-        <template ly-for="item in toc">
-          <a class="toc-link" ly-class=":item.level===3 sub" ly-attr:href="'#' + item.id" ly-text="item.text"></a>
+        <template ly-for="item in app.toc" ly-key="item.id">
+          <a class="toc-link" ly-bind:class="item.level === 3 ? 'toc-link sub' : 'toc-link'" ly-bind:href="'#' + item.id" ly-text="item.text"></a>
         </template>
       </div>
     </aside>
   </div>
 
-    <script type="lyap">
-    state({
-        navList: [],
-        current: LYAP_CURRENT,
-        drawer: false,
-        themeMenu: false,
-        theme: (() => { var t = 'system'; try { t = localStorage.getItem('lyap-theme') || 'system'; } catch (e) {} return t; })(),
-        toc: [],
-        version: LYAP_VERSION
+  <script>
+    const app = Lyap.scope('app');
+    app.state({
+      navList: [],
+      current: window.LYAP_CURRENT || 'events',
+      drawer: false,
+      themeMenu: false,
+      theme: (() => { var t = 'system'; try { t = localStorage.getItem('lyap-theme') || 'system'; } catch (e) {} return t; })(),
+      toc: [],
+      version: window.LYAP_VERSION || '3.0.0-proto'
     });
 
-    LYAP_NAV.forEach(g => {
-        navList.push({ kind: 'group', label: g.group });
-        g.items.forEach(i => navList.push({ kind: 'link', id: i.id, href: i.href, label: i.label }));
-    });
+    if (window.LYAP_NAV) {
+      window.LYAP_NAV.forEach(function (g) {
+        app.navList.push({ kind: 'group', label: g.group });
+        g.items.forEach(function (i) {
+          app.navList.push({ kind: 'link', id: i.id, href: i.href, label: i.label });
+        });
+      });
+    }
 
-    function applyTheme() {
-        var mode = theme;
+    app.actions({
+      applyTheme() {
+        var mode = this.theme;
         var saved = localStorage.getItem('lyap-theme');
         if (saved) mode = saved;
         var dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -268,84 +224,76 @@
         document.documentElement.dataset.theme = resolved;
         var meta = document.getElementById('meta-theme');
         if (meta) meta.content = resolved === 'dark' ? '#0b0d10' : '#ffffff';
-    }
-
-    function setTheme(mode) {
-        theme = mode;
-        themeMenu = false;
+      },
+      setTheme(mode) {
+        this.theme = mode;
+        this.themeMenu = false;
         localStorage.setItem('lyap-theme', mode);
-        applyTheme();
-    }
+        this.applyTheme();
+      },
+      toggleThemeMenu() {
+        this.themeMenu = !this.themeMenu;
+      },
+      closeDrawer() {
+        this.drawer = false;
+      },
+      toggleDrawer() {
+        this.drawer = !this.drawer;
+      }
+    });
 
-    function toggleThemeMenu() {
-        themeMenu = !themeMenu;
-    }
-
-    function closeDrawer() {
-        drawer = false;
-    }
-
-    function toggleDrawer() {
-        drawer = !drawer;
-    }
-
-    function prevLink() {
+    app.derived({
+      prevLink: () => {
         var idx = -1;
-        for (var i = 0; i < LYAP_FLAT.length; i++) if (LYAP_FLAT[i].id === current) idx = i;
-        if (idx === 0) return null;
-        if (idx === -1) return null;
-        return LYAP_FLAT[idx - 1];
-    }
-
-    function nextLink() {
+        for (var i = 0; i < (window.LYAP_FLAT || []).length; i++) if (window.LYAP_FLAT[i].id === app.current) idx = i;
+        if (idx <= 0) return null;
+        return window.LYAP_FLAT[idx - 1];
+      },
+      nextLink: () => {
         var idx = -1;
-        for (var i = 0; i < LYAP_FLAT.length; i++) if (LYAP_FLAT[i].id === current) idx = i;
-        if (idx === -1) return null;
-        if (idx >= LYAP_FLAT.length - 1) return null;
-        return LYAP_FLAT[idx + 1];
-    }
+        for (var i = 0; i < (window.LYAP_FLAT || []).length; i++) if (window.LYAP_FLAT[i].id === app.current) idx = i;
+        if (idx === -1 || idx >= (window.LYAP_FLAT || []).length - 1) return null;
+        return window.LYAP_FLAT[idx + 1];
+      }
+    });
 
-    mount(() => {
-        applyTheme();
+    app.onMount(() => {
+      app.applyTheme();
 
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () {
-            var saved = 'system';
-            try { saved = localStorage.getItem('lyap-theme') || 'system'; } catch (e) {}
-            if (saved === 'system') applyTheme();
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () {
+        var saved = 'system';
+        try { saved = localStorage.getItem('lyap-theme') || 'system'; } catch (e) {}
+        if (saved === 'system') app.applyTheme();
+      });
+
+      var content = document.querySelector('.doc-content');
+      if (content) {
+        var headings = content.querySelectorAll('h2, h3');
+        headings.forEach(function (h) {
+          if (!h.id) {
+            var slug = (h.textContent || '').trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+            h.id = slug || 'section';
+          }
+          app.toc.push({ id: h.id, text: (h.textContent || '').trim(), level: h.tagName === 'H3' ? 3 : 2 });
         });
 
-        var content = document.querySelector('.doc-content');
-        if (content) {
-            var headings = content.querySelectorAll('h2, h3');
-            var items = [];
-            headings.forEach(function (h) {
-                if (!h.id) {
-                    var slug = (h.textContent || '').trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-                    h.id = slug || 'section';
-                }
-                items.push({ id: h.id, text: (h.textContent || '').trim(), level: h.tagName === 'H3' ? 3 : 2 });
-            });
-            items.forEach(function (i) { toc.push(i); });
-
-            if ('IntersectionObserver' in window) {
-                var spy = new IntersectionObserver(function (entries) {
-                    var visible = entries.filter(function (e) { return e.isIntersecting; })
-                        .sort(function (a, b) { return a.boundingClientRect.top - b.boundingClientRect.top; });
-                    if (visible.length) {
-                        var id = visible[0].target.id;
-                        document.querySelectorAll('.toc-link').forEach(function (l) {
-                            l.classList.toggle('active', l.getAttribute('href') === '#' + id);
-                        });
-                    }
-                }, { rootMargin: '-80px 0px -72% 0px', threshold: 0.05 });
-                headings.forEach(function (h) { spy.observe(h); });
+        if ('IntersectionObserver' in window) {
+          var spy = new IntersectionObserver(function (entries) {
+            var visible = entries.filter(function (e) { return e.isIntersecting; })
+              .sort(function (a, b) { return a.boundingClientRect.top - b.boundingClientRect.top; });
+            if (visible.length) {
+              var id = visible[0].target.id;
+              document.querySelectorAll('.toc-link').forEach(function (l) {
+                l.classList.toggle('active', l.getAttribute('href') === '#' + id);
+              });
             }
+          }, { rootMargin: '-80px 0px -72% 0px', threshold: 0.05 });
+          headings.forEach(function (h) { spy.observe(h); });
         }
+      }
     });
   </script>
 </div>
 
-<script src="assets/site.js"></script>
-<script src="lyap.min.js"></script>
 </body>
 </html>
